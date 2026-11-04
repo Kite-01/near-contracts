@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "contracts/types",
+    "contracts/kite",
+    "contracts/factory",
+    "tests/mocks/ft",
+    "tests/mocks/router",
+    "tests/mocks/publisher",
+    "tests/sandbox",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/Kite-01/near-contracts"
+
+[workspace.dependencies]
+near-sdk = { version = "5.30", features = ["deterministic-account-ids"] }
+kite-types = { package = "types", path = "contracts/types" }
+near-contract-standards = "5.30"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true

@@ -1,0 +1,14 @@
+[package]
+name = "mock-ft"
+description = "Test only: used by sandbox-tests"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk.workspace = true
+near-contract-standards.workspace = true

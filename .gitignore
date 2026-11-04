@@ -1,0 +1,7 @@
+/target
+/dist
+deployments/*.bak
+.env
+.near-credentials/
+*.key.json
+.DS_Store

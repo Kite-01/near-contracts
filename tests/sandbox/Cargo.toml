@@ -1,0 +1,17 @@
+[package]
+name = "sandbox-tests"
+description = "factory and kite against a local NEAR sandbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dev-dependencies]
+kite-types.workspace = true
+near-sdk = { workspace = true, features = ["non-contract-usage"] }
+near-workspaces = "0.24"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+anyhow = "1"
+serde_json = "1"
+sha2 = "0.10"
+bs58 = "0.5"

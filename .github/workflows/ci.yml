@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_NEAR_VERSION: 0.22.0
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - run: rustup show active-toolchain
+      - uses: Swatinem/rust-cache@v2
+      - run: ./sh_scripts/lint.sh
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - run: rustup show active-toolchain
+      - uses: Swatinem/rust-cache@v2
+      - run: ./sh_scripts/test.sh unit
+
+  sandbox:
+    name: Sandbox tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - run: rustup show active-toolchain
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-near
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf \
+            "https://github.com/near/cargo-near/releases/download/cargo-near-v$CARGO_NEAR_VERSION/cargo-near-installer.sh" | sh
+      - run: ./sh_scripts/test.sh sandbox
+      - name: Code hashes
+        run: ./sh_scripts/build.sh | tail -3 >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wasm
+          path: |
+            target/near/kite/kite.wasm
+            target/near/factory/factory.wasm
+          if-no-files-found: error
